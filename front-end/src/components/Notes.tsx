@@ -100,7 +100,7 @@ const Notes : React.FC<NotesProps> = ({notes, seek}) => {
     // }, [currentId, reloadNote])
 
     return (
-        <Layout style={{height: '150px', overflowY: 'auto', background: 'none'}}>
+        <Layout style={{overflowY: 'auto', background: 'none'}}>
             {/* // <Space direction="vertical" style={{overflowY: 'auto', height: '100%'}}> */}
                 <List
                 size="small"

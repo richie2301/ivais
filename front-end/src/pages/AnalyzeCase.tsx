@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Layout, Row, Col, Typography, Tag, Space, Divider, Input, Modal, Select, Button, Avatar, Spin } from 'antd'
+import { Layout, Row, Col, Typography, Tag, Space, Divider, Input, Modal, Select, Button, Avatar, Spin, Tabs, Card } from 'antd'
 import dayjs from 'dayjs';
-import { TimePicker } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, ArrowLeftOutlined, PlusCircleOutlined, EditOutlined } from '@ant-design/icons';
+import type { TabsProps } from 'antd';
 // import { RangeValueType } from 'antd/es/time-picker'
 // import { RangePickerTimeProps } from 'antd/es/date-picker';
 import ReactPlayer from 'react-player';
@@ -335,13 +335,6 @@ const AnalyzeCase : React.FC<AnalyzeCaseProps> = ({success, connection}) => {
 
   const [notes, setNotes] = useState([])
 
-  const handleTimeRange = (e: any) => {
-    console.log(e)
-    setNoteTimeRange(e)
-    // setStartTime(e[0].toISOString())
-    // setEndTime(e[1].toISOString())
-  }
-
   useEffect(() => {
     if(noteTimeRange) {
       // setStartTime(noteTimeRange[0].toISOString())
@@ -397,21 +390,6 @@ const AnalyzeCase : React.FC<AnalyzeCaseProps> = ({success, connection}) => {
     })
   }
 }, [currentId, reloadNote, currentEvidenceId, caseId])
-
-const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
-// const [noteStartTime,]
-
-// const showModal = () => {
-//   setOpenAddNoteModal(true);
-// };
-
-// const handleOk = () => {
-//   setOpenAddNoteModal(false);
-// };
-
-const handleCancel = () => {
-  setOpenAddNoteModal(false);
-};
 
 const [noteDetailsModal, setNoteDetailsModal] = useState(false)
 const [noteDetails, setNoteDetails] = useState<any>()
@@ -900,241 +878,364 @@ const updateCase = () => {
 
 const [resetFilter, setResetFilter] = useState(false)
 
-    return (
-        <Layout style={{height: '100%', background: 'none'}}>
-          <Layout style={{height: '100%', background: 'none'}}>
-            {/* <Layout style={{background: 'purple', width: '30%'}}></Layout>
-            <Layout style={{background: 'green', width: '70%'}}></Layout> */}
-            <Row gutter={[10, 10]} style={{height: '100%'}}>
-              <Col span={12} style={{height: '100%'}}>
-                <Title style={{marginTop: 0}} level={3}>{currentCaseData?.title} <InfoCircleOutlined onClick={() => setOpenInfoModal(true)} /></Title>
-                <Row justify="space-between" style={{paddingBottom: '10px'}}>
-                  <Col>
-                    <Text>Status: {currentCaseData?.status}</Text>
-                  </Col>
-                  <Col>
-                    <Space align="end">
-                      <Text>{currentCaseData?.creator} - </Text>
-                      <Text>{new Date(currentCaseData?.createdAt).toLocaleString('en-GB', { timeZone: 'Asia/Jakarta' })}</Text>
-                    </Space>
-                  </Col>
-                </Row>
-                <Space direction="vertical" style={{width: '100%'}}>
-                  {/* <Row gutter={[10, 10]}> */}
-                  <Space.Compact style={{width: '100%', overflow: 'auto'}}>
-                    {tags?.map((tag) => (
-                      <Tag closable={true} onClose={() => handleCloseTag(tag.tagId)}>{tag.name}</Tag>
-                    ))}
-                  </Space.Compact>
-                  {/* </Row> */}
-                  <Row justify="space-between" style={{marginBottom: '10px'}}>
-                    <Col>
-                      <Space>
-                        {openAddTagModal && 
-                        <>
-                          <Input placeholder="Enter tag name" value={newTag} onChange={handleNewTag} /><Button onClick={addNewTag}>Add</Button>
-                        </>}
-                        <Button onClick={() => setOpenAddTagModal(!openAddTagModal)}>
-                          {!openAddTagModal && <Text>Add Tag</Text>}
-                          {openAddTagModal && <Text>Cancel</Text>}
-                        </Button>
-                      </Space>
-                    </Col>
-                    <Col>
-                      <Space>
-                        <Button onClick={() => setOpenCollaboratorModal(true)}>Collaborator</Button>
-                        <Button onClick={() => setOpenFilterModal(true)}>Filter</Button>
-                        <Button type="primary" onClick={() => setOpenCloseCaseModal(true)}>Close Case</Button>
-                        <Button type="primary" onClick={() => navigate('/report/' + caseId)}>Report</Button>
-                      </Space>
-                    </Col>
-                  </Row>
-                </Space>
-                <Space direction="vertical"  style={{height: '400px', width: '100%', overflowY: 'auto', overflowX: 'hidden'}}>
-                <Row gutter={10}>
-                  {/* <Col span={12}>
-                    <Divider orientation="left" orientationMargin={10} style={{margin: '8px 0'}}>New Evidence</Divider>
-                    <NewEvidenceList data={newEvidenceList} currentEvidenceId={currentEvidenceId} setCurrentEvidenceId={setCurrentEvidenceId} setCurrentId={setCurrentId} updateStatus={updateStatus} />
-                  </Col> */}
-                  <Col span={24}>
-                    <Divider orientation="left" orientationMargin={10} style={{margin: '8px 0'}}><Spin spinning={spinEvidenceList} /> Evidence List ({evidenceList?.length})</Divider>
-                    {(newEvidenceList.length != 0) && <NewEvidenceList data={newEvidenceList} currentEvidenceId={currentEvidenceId} setCurrentEvidenceId={setCurrentEvidenceId} setCurrentId={setCurrentId} updateStatus={updateStatus} />}
-                    {/* <NewEvidenceList data={newEvidenceList} currentEvidenceId={currentEvidenceId} setCurrentEvidenceId={setCurrentEvidenceId} setCurrentId={setCurrentId} updateStatus={updateStatus} /> */}
-                    <EvidenceList data={evidenceList} currentEvidenceId={currentEvidenceId} setCurrentEvidenceId={setCurrentEvidenceId} setCurrentId={setCurrentId} updateStatus={updateStatus} success={success} />
-                  </Col>
-                </Row>
-                <Row gutter={10}>
-                  <Col span={12}>
-                    <Divider orientation="left" orientationMargin={10} style={{margin: '8px 0'}}><Spin spinning={spinMetadata} /> People Metadata ({filteredPeopleData?.length})</Divider>
-                    <Layout style={{height: '200px', overflowY: 'auto', background: 'none'}}>
-                      <FaceList seek={seek} faceData={filteredPeopleData} />
-                    </Layout>
-                  </Col>
-                  <Col span={12}>
-                    <Divider orientation="left" orientationMargin={10} style={{margin: '8px 0'}}><Spin spinning={spinMetadata} /> Attribute Metadata ({filteredPeopleAttribute?.length})</Divider>
-                    <Layout style={{height: '200px', overflowY: 'auto', background: 'none'}}>
-                      <AttributeList seek={seek} peopleAttribute={filteredPeopleAttribute} />
-                    </Layout>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={24}>
-                      <Row gutter= {10}>
-                        <Col flex="auto">
-                        <Divider orientation="left" orientationMargin={10} style={{margin: '8px 0'}}><Spin spinning={spinNotes} /> Notes</Divider>
-                        </Col>
-                        {/* <Col flex="none">
-                        <Space style={{height: '100%'}}>
-                          <Button type="primary" style={{width: '100%', margin: 'auto'}}>Add Note</Button>
-                        </Space>
-                        </Col> */}
-                      </Row>
-                      <Notes notes={notes} seek={seek} />
-                    </Col>
-                    <Col span={24}>
-                      <Divider orientation="left" orientationMargin={10} style={{margin: '8px 0'}}><Spin spinning={spinActivity} /> Activity Log</Divider>
-                      <ActivityLog activityLog={activityLog} />
-                    </Col>
-                </Row>
-                </Space>
+const tabItems: TabsProps['items'] = [
+  {
+    key: '1',
+    label: 'Summary',
+    children: 
+      <Card style={{height: '470px', width: '500px'}}>
+        <Space direction="vertical" style={{width: '100%'}}>
+          <Row justify="space-between">
+              <Col>
+                <Title level={4} style={{margin: 0}}>Summary</Title>
               </Col>
-              <Col span={12} flex="none">
-                {/* <ReactPlayer url={videoUrl} height="350px" controls={true} /> */}
-                <CaseTimeline 
-                  videoUrl={videoUrl} 
-                  reactPlayerRef={ref} 
-                  timelineRef={timelineRef} 
-                  isPlaying={isPlaying} 
-                  setIsPlaying={setIsPlaying} 
-                  faceData={faceData} 
-                  attributeData={peopleAttribute} 
-                  notes={notes} 
-                  setOpenAddNoteModal={setOpenAddNoteModal} 
-                  setNoteTimeRange={setNoteTimeRange} 
-                  openNoteDetails={openNoteDetails} 
-                  handleStop={handleStop}
-                  setNoteDetailsModal={setNoteDetailsModal} />
-                {/* <Space direction="vertical" style={{width: '100%', padding: '10px 0'}}>
-                  <Row gutter={10}>
-                    <Col span={12}>
-                      <TimePicker style={{width: '100%'}} value={noteStartTime} onChange={handleStartTime} placeholder="Start time" />
-                    </Col>
-                    <Col span={12}>
-                      <TimePicker style={{width: '100%'}} value={noteEndTime} onChange={handleEndTime} />
-                    </Col>
-                  </Row>
-                  <Row gutter={10}>
-                    <Col flex="auto">
-                      <Input  style={{width: '100%'}} value={note} onChange={handleNote} />
-                    </Col>
-                    <Col flex="none">
-                      <Button onClick={sendNote}>Send</Button>
-                    </Col>
-                  </Row>
-                </Space> */}
+              <Col>
+                <Button icon={<EditOutlined />} style={{marginRight: '5px'}} onClick={() => setOpenInfoModal(true)}>Edit</Button>
               </Col>
             </Row>
-            <Modal title="Add Note" open={openAddNoteModal} onOk={sendNote} okText="Add Note" onCancel={handleCancel}>
-              <Space direction="vertical" style={{width: '100%', padding: '10px 0'}}>
-                <Text>Time Range</Text>
-                <TimePicker.RangePicker value={noteTimeRange} onChange={handleTimeRange} style={{width: '100%'}} />
-                <Text>Priority Level</Text>
-                <Select
-                  defaultValue="1"
-                  style={{width: '100%'}}
-                  options={[
-                    { value: '1', label: '1' },
-                    { value: '2', label: '2' },
-                    { value: '3', label: '3' },
-                    { value: '4', label: '4' },
-                  ]}
-                />
-                <Text>Note</Text>
-                <Input  style={{width: '100%'}} value={note} onChange={handleNote} />
-              </Space>
-            </Modal>
-            <Modal title="Note Details" open={noteDetailsModal} onOk={sendNote} okText="Add Note" onCancel={handleCancelNoteDetails} footer={false}>
-              <Space direction="vertical" style={{width: '100%', padding: '10px 0'}}>
-                {noteDetails && noteDetails.data.saved &&
-                  <Space direction="vertical">
-                    <Text>Start Time: {new Date(dayjs.unix(noteDetails.start).toString()).toLocaleTimeString('en-GB', { timeZone: 'UTC' })}</Text>
-                    <Text>End Time: {new Date(dayjs.unix(noteDetails.end).toString()).toLocaleTimeString('en-GB', { timeZone: 'UTC' })}</Text>
-                    {/* <Text>Status: {noteDetails.data.status ? 'Saved' : 'Not Saved'}</Text> */}
-                    <Text>Note: {noteDetails.data.name}</Text>
-                    <Text>Level: {noteDetails.data.level}</Text>
-                    <Text>Description: {noteDetails.data.notes}</Text>
-                  </Space>
-                }
-                {
-                  noteDetails && !noteDetails.data.saved && 
+          <Space direction="vertical" style={{width: '100%', height: '360px', overflowY: 'scroll', overflowX: 'hidden', paddingTop: '20px'}}>
+            <Space style={{paddingBottom: '15px'}}>
+              {/* <Avatar></Avatar> */}
+              <Title level={5} style={{margin: 0}}>{currentCaseData?.creator}</Title>
+            </Space>
+            <Text strong>Objective</Text>
+            <Text>{objective}</Text>
+            <Divider style={{margin: 0}}></Divider>
+            <Row justify="space-between">
+              <Col>Date Created</Col>
+              <Col>{new Date(currentCaseData?.createdAt).toLocaleString('en-GB', { timeZone: 'Asia/Jakarta' })}</Col>
+            </Row>
+            <Divider style={{margin: 0}}></Divider>
+            <Row justify="space-between">
+              <Col>Date Modified</Col>
+              <Col>{new Date(currentCaseData?.createdAt).toLocaleString('en-GB', { timeZone: 'Asia/Jakarta' })}</Col>
+            </Row>
+            <Divider style={{margin: 0}}></Divider>
+            <Row justify="space-between">
+              <Col>Total Evidence</Col>
+              <Col>{evidenceList?.length}</Col>
+            </Row>
+            {/* <Divider style={{margin: 0}}></Divider>
+            <Row justify="space-between">
+              <Col>Duration</Col>
+              <Col>10 hours 5 minutes</Col>
+            </Row> */}
+            <Divider style={{margin: 0}}></Divider>
+            <Row justify="space-between">
+              <Col>
+                <Space>
+                  Collaborator
+                  <PlusCircleOutlined onClick={() => setOpenCollaboratorModal(true)} />
+                </Space>
+              </Col>
+              <Col>
+                <Space direction="vertical" align="end">
+                  {currentCaseData?.collaborators.map((collaborator: string) => <Text>{collaborator}</Text>)}
+                </Space>
+              </Col>
+            </Row>
+          </Space>
+        </Space>
+      </Card>,
+  },
+  {
+    key: '2',
+    label: 'Evidences',
+    children: 
+      <Card style={{height: '470px'}}>
+        <Space direction="vertical" style={{width: '100%'}}>
+          <Row justify="space-between">
+            <Col>
+              <Title level={4} style={{margin: 0}}>Evidence List</Title>
+            </Col>
+            <Col>
+              <Spin spinning={spinEvidenceList} />
+            </Col>
+          </Row>
+          <Text disabled><Text strong>{evidenceList?.length}</Text> in total</Text>
+          <Space direction="vertical" style={{width: '100%', height: '360px', overflowY: 'scroll', overflowX: 'hidden'}}>
+            {(newEvidenceList.length != 0) && <NewEvidenceList data={newEvidenceList} currentEvidenceId={currentEvidenceId} setCurrentEvidenceId={setCurrentEvidenceId} setCurrentId={setCurrentId} updateStatus={updateStatus} />}
+            <EvidenceList data={evidenceList} currentEvidenceId={currentEvidenceId} setCurrentEvidenceId={setCurrentEvidenceId} setCurrentId={setCurrentId} updateStatus={updateStatus} success={success} />
+          </Space>
+        </Space>
+      </Card>,
+  },
+  {
+    key: '3',
+    label: 'People',
+    children: 
+      <Card style={{height: '470px'}}>
+        <Space direction="vertical" style={{width: '100%'}}>
+          <Row justify="space-between">
+            <Col>
+              <Title level={4} style={{margin: 0}}>People Metadata</Title>
+            </Col>
+            <Col>
+              <Spin spinning={spinMetadata} />
+            </Col>
+          </Row>
+          <Text disabled><Text strong>{filteredPeopleData?.length}</Text> in total</Text>
+          <Space direction="vertical" style={{width: '100%', height: '360px', overflowY: 'scroll', overflowX: 'hidden'}}>
+            <FaceList seek={seek} faceData={filteredPeopleData} />
+          </Space>
+        </Space>
+      </Card>,
+  },
+  {
+    key: '4',
+    label: 'Attributes',
+    children: 
+      <Card style={{height: '470px'}}>
+        <Space direction="vertical" style={{width: '100%'}}>
+          <Row justify="space-between">
+            <Col>
+              <Title level={4} style={{margin: 0}}>Attribute Metadata</Title>
+            </Col>
+            <Col>
+              <Spin spinning={spinMetadata} />
+            </Col>
+          </Row>
+          <Text disabled><Text strong>{filteredPeopleAttribute?.length}</Text> in total</Text>
+          <Space direction="vertical" style={{width: '100%', height: '360px', overflowY: 'scroll', overflowX: 'hidden'}}>
+            <AttributeList seek={seek} peopleAttribute={filteredPeopleAttribute} />
+          </Space>
+        </Space>
+      </Card>,
+  },
+  {
+    key: '5',
+    label: 'Notes',
+    children: 
+      <Card style={{height: '470px'}}>
+        <Space direction="vertical" style={{width: '100%'}}>
+          <Row justify="space-between">
+            <Col>
+              <Title level={4} style={{margin: 0}}>Notes</Title>
+            </Col>
+            <Col>
+              <Spin spinning={spinNotes} />
+            </Col>
+          </Row>
+          <Text disabled><Text strong>{notes?.length}</Text> in total</Text>
+          <Space direction="vertical" style={{width: '100%', height: '360px', overflowY: 'scroll', overflowX: 'hidden'}}>
+            <Notes notes={notes} seek={seek} />
+          </Space>
+        </Space>
+      </Card>,
+  },
+  {
+    key: '6',
+    label: 'Activity Log',
+    children: 
+      <Card style={{height: '470px'}}>
+        <Space direction="vertical" style={{width: '100%'}}>
+          <Row justify="space-between">
+            <Col>
+              <Title level={4} style={{margin: 0}}>Activity Log</Title>
+            </Col>
+            <Col>
+              <Spin spinning={spinActivity} />
+            </Col>
+          </Row>
+          <Text disabled><Text strong>{activityLog?.length}</Text> in total</Text>
+          <Space direction="vertical" style={{width: '100%', height: '360px', overflowY: 'scroll', overflowX: 'hidden'}}>
+            <ActivityLog activityLog={activityLog} />
+          </Space>
+        </Space>
+      </Card>,
+  },
+];
+
+const [showReactPlayer, setShowReactPlayer] = useState(false)
+
+const onChangeTabs = (key: string) => {
+  if (key == "1") {
+    setShowReactPlayer(false)
+  }
+  else {
+    setShowReactPlayer(true)
+  }
+};
+
+    return (
+        <Layout style={{background: 'none'}}>
+          <Row gutter={10} style={{paddingBottom: '10px'}}>
+            <Col flex="none">
+              <Button icon={<ArrowLeftOutlined />} type="text" onClick={() => navigate('/case')}></Button>
+            </Col>
+            <Col flex="auto">
+              <Space direction="vertical">
+                <Space>
+                  <Title level={3} style={{margin: 0}}>{caseTitle}</Title>
+                  <Tag color="blue">{currentCaseData?.status}</Tag>
+                  <InfoCircleOutlined onClick={() => setOpenInfoModal(true)} />
+                </Space>
+                <Space>
+                  <Text>{new Date(currentCaseData?.createdAt).toLocaleString('en-GB', { timeZone: 'Asia/Jakarta' })}</Text>
                   <Space direction="vertical" style={{width: '100%'}}>
-                    <Row>
-                      <Col span={6}>
-                        <Text>Start Time</Text>
-                      </Col>
+                    {/* <Row gutter={[10, 10]}> */}
+                    <Space.Compact style={{width: '100%', overflow: 'auto'}}>
+                      {tags?.map((tag) => (
+                        <Tag closable={true} onClose={() => handleCloseTag(tag.tagId)}>{tag.name}</Tag>
+                      ))}
+                    </Space.Compact>
+                    {/* </Row> */}
+                    <Row justify="space-between" style={{marginBottom: '10px'}}>
                       <Col>
-                        <Text>{new Date(dayjs.unix(noteDetails.start).toString()).toLocaleTimeString('en-GB', { timeZone: 'UTC' })}</Text>
+                        <Space>
+                          {openAddTagModal && 
+                          <>
+                            <Input placeholder="Enter tag name" value={newTag} onChange={handleNewTag} /><Button onClick={addNewTag}>Add</Button>
+                          </>}
+                          <Button onClick={() => setOpenAddTagModal(!openAddTagModal)}>
+                            {!openAddTagModal && <Text>Add Tag</Text>}
+                            {openAddTagModal && <Text>Cancel</Text>}
+                          </Button>
+                        </Space>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col span={6}>
-                        <Text>End Time</Text>
-                      </Col>
-                      <Col>
-                        <Text>{new Date(dayjs.unix(noteDetails.end).toString()).toLocaleTimeString('en-GB', { timeZone: 'UTC' })}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={6}>
-                        Title
-                      </Col>
-                      <Col>
-                        {noteDetails.data.name}
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={6}>
-                        Level
-                      </Col>
-                      <Col span={18}>
-                      <Select defaultValue='1' style={{width: '100%'}} onChange={handleLevel} options={
-                        [{label: '1', value: 1},
-                        {label: '2', value: 2},
-                        {label: '3', value: 3}]
-                        } />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={6}>
-                        Note
-                      </Col>
-                      <Col span={18}>
-                        <TextArea value={note} onChange={handleNote} />
-                      </Col>
-                    </Row>
-                    <Row justify="end">
-                      <Col>
-                        <Button type="primary" onClick={sendNote}>Save Note</Button>
-                      </Col>
-                    </Row>
-                    {/* <Text>Title: {noteDetails.data.name}</Text> */}
-                    {/* <Input value={note} onChange={handleNote} />
-                    <Button onClick={sendNote}>Save Note</Button> */}
                   </Space>
-                }
-                <Divider>People Metadata</Divider>
-                {filteredFaceData && <FaceList seek={seek} faceData={filteredFaceData} />}
-                <Divider>Attibute Metadata</Divider>
-                {filteredAttributeData && <AttributeList seek={seek} peopleAttribute={filteredAttributeData}/>}
+                </Space>
               </Space>
-            </Modal>
-            <Modal title="Close Case" open={openCloseCaseModal} onOk={closeCase} okText="Close Case" onCancel={() => setOpenCloseCaseModal(false)}>
+            </Col>
+            <Col flex="none">
+              <Space>
+                <Button onClick={() => setOpenFilterModal(true)}>Filter</Button>
+                <Button onClick={() => navigate('/report/' + caseId)}>Report</Button>
+                <Button type="primary" onClick={() => setOpenCloseCaseModal(true)}>Close Case</Button>
+              </Space>
+            </Col>
+          </Row>
+          <Row gutter={15}>
+            <Col flex="auto">
+              <Tabs defaultActiveKey="1" items={tabItems} style={{height: '100%'}} onChange={onChangeTabs} />
+            </Col>
+            <Col flex="none">
+              {showReactPlayer && <CaseTimeline 
+                videoUrl={videoUrl} 
+                reactPlayerRef={ref} 
+                timelineRef={timelineRef} 
+                isPlaying={isPlaying} 
+                setIsPlaying={setIsPlaying} 
+                faceData={faceData} 
+                attributeData={peopleAttribute} 
+                notes={notes} 
+                setNoteTimeRange={setNoteTimeRange} 
+                openNoteDetails={openNoteDetails} 
+                handleStop={handleStop}
+                setNoteDetailsModal={setNoteDetailsModal} />}
+            </Col>
+          </Row>
+
+          {/* Modal */}
+          <Modal centered title="Case Information" open={openInfoModal} onOk={updateCase} okText="Update" onCancel={() => setOpenInfoModal(false)} width={1000}>
+            {/* <Filter /> */}
+            <Row>
+              <Col span={12}>
+                <Space direction="vertical" style={{width: '100%', maxHeight: '400px', overflowY: 'scroll'}}>
+                  <Text>Person</Text>
+                  {personBaseFilter.map((person: any) => 
+                    <Space direction="horizontal" style={{width: '100%'}}>
+                      {/* <img src={"data:image/png;base64," + person.picture}  style={{height: '100px'}} /> */}
+                      <Avatar src={"data:image/png;base64," + person.picture} />
+                      <Text>{person.name}</Text>
+                    </Space>
+                  )}
+                  <Row>
+                    <Col span={8}>
+                      <Text>Gender</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.gender}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>
+                      <Text>Age</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.age}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>
+                      <Text>Hair Length</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.hairLength}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>
+                      <Text>Upper Clothes Length</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.upperClothesLength}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>
+                      <Text>Lower Clothes Length</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.lowerClothesLength}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>
+                      <Text>Lower Clothes Type</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.lowerClothesType}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>
+                      <Text>Accessories</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.accessories}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>
+                      <Text>Upper Clothes Color</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.upperClothesColor}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>
+                      <Text>Lower Clothes Color</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text>: {currentCaseData?.attributeBaseFilter.lowerClothesColor}</Text>
+                    </Col>
+                  </Row>
+                </Space>
+              </Col>
+              <Col span={12}>
               <Space direction="vertical" style={{width: '100%'}}>
-                <Text>Reason to close case</Text>
-                <TextArea placeholder="Enter your reason" value={closeCaseReason} onChange={handleCloseCaseReason} />
+                <Text>Case Title</Text>
+                <Input placeholder="Enter case title" value={caseTitle} onChange={updateCaseTitle} />
+                <Text>Objective</Text>
+                <TextArea placeholder="Enter objective" value={objective} onChange={updateObjective} />
+                <Text>Executive Summary</Text>
+                <TextArea placeholder="Enter executive summary" value={executiveSummary} onChange={updateExecutiveSummary} />
+                <Text>Conclusion</Text>
+                <TextArea placeholder="Enter conclusion" value={conclusion} onChange={updateConclusion} />
               </Space>
-            </Modal>
-            <Modal centered title="Filter" open={openFilterModal} onOk={applyFilter} okText="Apply" onCancel={() => setOpenFilterModal(false)}
+              </Col>
+            </Row>
+          </Modal>
+          <Modal title="Close Case" open={openCloseCaseModal} onOk={closeCase} okText="Close Case" onCancel={() => setOpenCloseCaseModal(false)}>
+            <Space direction="vertical" style={{width: '100%'}}>
+              <Text>Reason to close case</Text>
+              <TextArea placeholder="Enter your reason" value={closeCaseReason} onChange={handleCloseCaseReason} />
+            </Space>
+          </Modal>
+          <Modal centered title="Filter" open={openFilterModal} onOk={applyFilter} okText="Apply" onCancel={() => setOpenFilterModal(false)}
             width={700}
             footer={[
               <Button onClick={() => setOpenFilterModal(false)}>
@@ -1150,170 +1251,90 @@ const [resetFilter, setResetFilter] = useState(false)
                 Apply
               </Button>,
             ]}>
-              {/* <Row>
-                <Col span={4}>
-                  <Text>Person</Text>
-                </Col>
-                <Col span={20}>
-                  <Select style={{width: '100%'}} />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={4}>
-                  <Text>Age</Text>
-                </Col>
-                <Col span={20}>
-                  <Select style={{width: '100%'}} />
-                </Col>
-              </Row> */}
-              <Filter selectedGeneralAttribute={selectedGeneralAttribute} setSelectedGeneralAttribute={setSelectedGeneralAttribute} selectedFaceData={selectedFaceData} setSelectedFaceData={setSelectedFaceData} selectedColorAttribute={selectedColorAttribute} setSelectedColorAttribute={setSelectedColorAttribute} startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} selectedTagId={selectedTagId} setSelectedTagId={setSelectedTagId} resetFilter={resetFilter} setResetFilter={setResetFilter} currentCaseData={currentCaseData} />
-            </Modal>
-            <Modal centered title="Collaborator" open={openCollaboratorModal} onOk={applyFilter} okText="Add Collaborator" onCancel={() => setOpenCollaboratorModal(false)} footer={false}>
-              <Space direction="vertical" style={{width: '100%'}}>
-              {currentCaseData?.collaborators.map((collaborator: string) => <Text>{collaborator}</Text>)}
-              <Select options={newCollaboratorList} style={{width: '100%'}} placeholder="Add Collaborator" onChange={handleNewCollaborator} />
-              <Button type="primary" onClick={handleAddNewCollaborator}>Add</Button>
-              </Space>
-            </Modal>
-            {/* <Modal centered title="Add Collaborator" open={openAddCollaboratorModal} onOk={() => setOpenAddCollaboratorModal(true)} okText="Add" onCancel={() => setOpenAddCollaboratorModal(false)}>
-              
-            </Modal> */}
-            <Modal centered title="Case Information" open={openInfoModal} onOk={updateCase} okText="Update" onCancel={() => setOpenInfoModal(false)} width={1000}>
-              {/* <Filter /> */}
-              <Row>
-                <Col span={12}>
-                  <Space direction="vertical" style={{width: '100%', maxHeight: '400px', overflowY: 'scroll'}}>
-                    <Text>Person</Text>
-                    {personBaseFilter.map((person: any) => 
-                      <Space direction="horizontal" style={{width: '100%'}}>
-                        {/* <img src={"data:image/png;base64," + person.picture}  style={{height: '100px'}} /> */}
-                        <Avatar src={"data:image/png;base64," + person.picture} />
-                        <Text>{person.name}</Text>
-                      </Space>
-                    )}
-                    <Row>
-                      <Col span={8}>
-                        <Text>Gender</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.gender}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={8}>
-                        <Text>Age</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.age}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={8}>
-                        <Text>Hair Length</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.hairLength}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={8}>
-                        <Text>Upper Clothes Length</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.upperClothesLength}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={8}>
-                        <Text>Lower Clothes Length</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.lowerClothesLength}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={8}>
-                        <Text>Lower Clothes Type</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.lowerClothesType}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={8}>
-                        <Text>Accessories</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.accessories}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={8}>
-                        <Text>Upper Clothes Color</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.upperClothesColor}</Text>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={8}>
-                        <Text>Lower Clothes Color</Text>
-                      </Col>
-                      <Col span={16}>
-                        <Text>: {currentCaseData?.attributeBaseFilter.lowerClothesColor}</Text>
-                      </Col>
-                    </Row>
-                  </Space>
-                </Col>
-                <Col span={12}>
-                <Space direction="vertical" style={{width: '100%'}}>
-                  <Text>Case Title</Text>
-                  <Input placeholder="Enter case title" value={caseTitle} onChange={updateCaseTitle} />
-                  <Text>Objective</Text>
-                  <TextArea placeholder="Enter objective" value={objective} onChange={updateObjective} />
-                  <Text>Executive Summary</Text>
-                  <TextArea placeholder="Enter executive summary" value={executiveSummary} onChange={updateExecutiveSummary} />
-                  <Text>Conclusion</Text>
-                  <TextArea placeholder="Enter conclusion" value={conclusion} onChange={updateConclusion} />
+            <Filter selectedGeneralAttribute={selectedGeneralAttribute} setSelectedGeneralAttribute={setSelectedGeneralAttribute} selectedFaceData={selectedFaceData} setSelectedFaceData={setSelectedFaceData} selectedColorAttribute={selectedColorAttribute} setSelectedColorAttribute={setSelectedColorAttribute} startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} selectedTagId={selectedTagId} setSelectedTagId={setSelectedTagId} resetFilter={resetFilter} setResetFilter={setResetFilter} currentCaseData={currentCaseData} />
+          </Modal>
+          <Modal centered title="Collaborator" open={openCollaboratorModal} onOk={applyFilter} okText="Add Collaborator" onCancel={() => setOpenCollaboratorModal(false)} footer={false}>
+            <Space direction="vertical" style={{width: '100%'}}>
+            {currentCaseData?.collaborators.map((collaborator: string) => <Text>{collaborator}</Text>)}
+            <Select options={newCollaboratorList} style={{width: '100%'}} placeholder="Add Collaborator" onChange={handleNewCollaborator} />
+            <Button type="primary" onClick={handleAddNewCollaborator}>Add</Button>
+            </Space>
+          </Modal>
+          <Modal title="Note Details" open={noteDetailsModal} onOk={sendNote} okText="Add Note" onCancel={handleCancelNoteDetails} footer={false}>
+            <Space direction="vertical" style={{width: '100%', padding: '10px 0'}}>
+              {noteDetails && noteDetails.data.saved &&
+                <Space direction="vertical">
+                  <Text>Start Time: {new Date(dayjs.unix(noteDetails.start).toString()).toLocaleTimeString('en-GB', { timeZone: 'UTC' })}</Text>
+                  <Text>End Time: {new Date(dayjs.unix(noteDetails.end).toString()).toLocaleTimeString('en-GB', { timeZone: 'UTC' })}</Text>
+                  {/* <Text>Status: {noteDetails.data.status ? 'Saved' : 'Not Saved'}</Text> */}
+                  <Text>Note: {noteDetails.data.name}</Text>
+                  <Text>Level: {noteDetails.data.level}</Text>
+                  <Text>Description: {noteDetails.data.notes}</Text>
                 </Space>
-                </Col>
-              </Row>
-            </Modal>
-
-          </Layout>
-          {/* <Layout style={{background: 'none', height: '100%'}}>
-            <Row gutter={10} style={{height: '100%'}}>
-              <Col span={6}>
-                <Divider orientation="left" orientationMargin={0} style={{margin: '8px 0'}}>Activity Log</Divider>
-                <ActivityLog />
-              </Col>
-              <Col span={6}>
-                <Divider orientation="left" orientationMargin={0} style={{margin: '8px 0'}}>People Metadata</Divider>
-                <Layout style={{height: '150px', overflowY: 'auto', background: 'none'}}>
-                  <FaceList seek={seek} faceData={faceData} />
-                </Layout>
-              </Col>
-              <Col span={6}>
-                <Divider orientation="left" orientationMargin={0} style={{margin: '8px 0'}}>Attribute Metadata</Divider>
-                <Layout style={{height: '150px', overflowY: 'auto', background: 'none'}}>
-                  <AttributeList seek={seek} peopleAttribute={peopleAttribute} attributePhotos={attributePhotos} />
-                </Layout>
-              </Col>
-              <Col span={6}>
-                <Row gutter= {10}>
-                  <Col flex="auto">
-                  <Divider orientation="left" orientationMargin={0} style={{margin: '8px 0'}}>Notes</Divider>
-                  </Col>
-                  <Col flex="none">
-                  <Space style={{height: '100%'}}>
-                    <Button type="primary" style={{width: '100%', margin: 'auto'}}>Add Note</Button>
-                  </Space>
-                  </Col>
-                </Row>
-                <Notes />
-              </Col>
-            </Row>
-          </Layout> */}
+              }
+              {
+                noteDetails && !noteDetails.data.saved && 
+                <Space direction="vertical" style={{width: '100%'}}>
+                  <Row>
+                    <Col span={6}>
+                      <Text>Start Time</Text>
+                    </Col>
+                    <Col>
+                      <Text>{new Date(dayjs.unix(noteDetails.start).toString()).toLocaleTimeString('en-GB', { timeZone: 'UTC' })}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={6}>
+                      <Text>End Time</Text>
+                    </Col>
+                    <Col>
+                      <Text>{new Date(dayjs.unix(noteDetails.end).toString()).toLocaleTimeString('en-GB', { timeZone: 'UTC' })}</Text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={6}>
+                      Title
+                    </Col>
+                    <Col>
+                      {noteDetails.data.name}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={6}>
+                      Level
+                    </Col>
+                    <Col span={18}>
+                    <Select defaultValue='1' style={{width: '100%'}} onChange={handleLevel} options={
+                      [{label: '1', value: 1},
+                      {label: '2', value: 2},
+                      {label: '3', value: 3}]
+                      } />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={6}>
+                      Note
+                    </Col>
+                    <Col span={18}>
+                      <TextArea value={note} onChange={handleNote} />
+                    </Col>
+                  </Row>
+                  <Row justify="end">
+                    <Col>
+                      <Button type="primary" onClick={sendNote}>Save Note</Button>
+                    </Col>
+                  </Row>
+                  {/* <Text>Title: {noteDetails.data.name}</Text> */}
+                  {/* <Input value={note} onChange={handleNote} />
+                  <Button onClick={sendNote}>Save Note</Button> */}
+                </Space>
+              }
+              <Divider>People Metadata</Divider>
+              {filteredFaceData && <FaceList seek={seek} faceData={filteredFaceData} />}
+              <Divider>Attibute Metadata</Divider>
+              {filteredAttributeData && <AttributeList seek={seek} peopleAttribute={filteredAttributeData}/>}
+            </Space>
+          </Modal>
         </Layout>
     )
 }

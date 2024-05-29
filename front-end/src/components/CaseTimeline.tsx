@@ -25,7 +25,7 @@ type CaseTimelineProps = {
   faceData: any,
   attributeData: any,
   notes: any,
-  setOpenAddNoteModal: (a: boolean) => void,
+  // setOpenAddNoteModal: (a: boolean) => void,
   setNoteTimeRange: (a: any) => void,
   openNoteDetails: (a: any) => void,
   handleStop: () => void;

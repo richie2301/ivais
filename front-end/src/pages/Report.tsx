@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Typography, Row, Col, Space, Table, Button, ConfigProvider, theme, Modal, Tag } from 'antd'
-// import { EditOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 // import type { ColumnsType } from 'antd/es/table'
 import { useParams, useNavigate } from 'react-router-dom'
 import html2pdf from 'html2pdf.js'
@@ -533,7 +533,10 @@ const Report: React.FC = () => {
         <>
         <Row justify="space-between" style={{padding: '15px 0px'}}>
             <Col>
-                <Title level={4} style={{margin: 0}}>Case Report</Title>
+                <Space>
+                    <Button icon={<ArrowLeftOutlined />} type="text" onClick={() => navigate('/analyzeCase')}></Button>
+                    <Title level={4} style={{margin: 0}}>Case Report</Title>
+                </Space>
             </Col>
             <Col>
                 <Space>

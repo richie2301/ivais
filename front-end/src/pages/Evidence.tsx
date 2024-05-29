@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Input, Row, Col, Button, Space, Table, Drawer, Tag } from 'antd';
-import { FileOutlined } from '@ant-design/icons';
+// import { FileOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import MissionDetailsDrawer from '../components/MissionDetailsDrawer';
 import { HubConnection } from '@microsoft/signalr';
@@ -224,9 +224,10 @@ const Evidence: React.FC<EvidenceProps> = ({success, connection}) => {
             key: 'action',
             render: (_, record) => (
                 <>
+                    <Button type="primary" onClick={() => setOpenDrawer(record)}>View</Button>
                     {/* <Space> */}
                         {/* <Button type="primary" icon={<FolderOutlined />} onClick={() => navigate('/missionDetails')}>Mission</Button> */}
-                        <Button type="primary" icon={<FileOutlined />} onClick={() => setOpenDrawer(record)}>Evidence</Button>
+                        {/* <Button type="primary" icon={<FileOutlined />} onClick={() => setOpenDrawer(record)}>Evidence</Button> */}
                     {/* </Space> */}
                 </>
             ),

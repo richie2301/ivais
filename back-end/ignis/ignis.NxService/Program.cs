@@ -18,7 +18,6 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.WithMachineName()
     .WriteTo.Console()
     .WriteTo.File($"{Logs_Root_Folder}/xit_appliance_nx_service.log")
-    .WriteTo.NewRelicLogs(applicationName: Assembly.GetExecutingAssembly().GetName().Name, licenseKey: "467a67637def208f2067bb4aea61c8933212NRAL")
     .CreateLogger();
 
 try

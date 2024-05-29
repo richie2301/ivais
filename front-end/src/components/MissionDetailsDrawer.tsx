@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Space, Typography, Layout, Drawer, Button, Row, Col, Tabs, Tag } from "antd";
+import { Space, Typography, Layout, Drawer, Row, Col, Tabs, Tag } from "antd";
 import type { TabsProps } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
+// import { EyeOutlined } from '@ant-design/icons';
 import FaceList from "./FaceList";
 import AttributeList from "./AttributeList";
 
@@ -189,11 +189,11 @@ const MissionDetailsDrawer: React.FC<MissionDetailsDrawerProps> = ({videoFootage
                     <Col>
                         <Title level={4}>{evidenceData.name}</Title>
                     </Col>
-                    <Col>
+                    {/* <Col>
                         <Space align="center" style={{height: '100%'}}>
                             <Button type="primary" icon={<EyeOutlined />}>View</Button>
                         </Space>
-                    </Col>
+                    </Col> */}
                 </Row>
                 <Row>
                     <Col span={6}>

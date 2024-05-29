@@ -15,7 +15,7 @@ import {
   // ProfileOutlined,
 
 } from '@ant-design/icons';
-import { Avatar, Layout, Menu, Button, theme, message, Row, Col, Typography, Space } from 'antd';
+import { Avatar, Layout, Menu, Button, theme, message, Row, Col, Typography, Space, Divider } from 'antd';
 
 import '../App.css';
 
@@ -403,11 +403,11 @@ useEffect(() => {
             navigate(key) 
             }}
           items={[
-            {
-              key: '/profile',
-              icon: <Avatar size={20} src={"data:image/png;base64," + userData?.profilePicture} />,
-              label: userData?.name,
-            },
+            // {
+            //   key: '/profile',
+            //   icon: <Avatar size={20} src={"data:image/png;base64," + userData?.profilePicture} />,
+            //   label: userData?.name,
+            // },
             // {
             //   key: '/dashboard',
             //   icon: <PieChartOutlined />,
@@ -467,6 +467,11 @@ useEffect(() => {
               />
             </Col>
             <Col>
+              <Space style={{padding: "0 10px"}}>
+                <Avatar size={20} src={"data:image/png;base64," + userData?.profilePicture} />
+                <Text>{userData?.name}</Text>
+              </Space>
+              <Divider type="vertical" style={{height: '20px'}}></Divider>
               <Button
               type="text"
               icon={<LogoutOutlined />}

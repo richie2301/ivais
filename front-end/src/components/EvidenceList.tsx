@@ -1,5 +1,6 @@
 import React from 'react';
-import { List, Layout, Typography, theme, Switch, Space, Tag, Button } from 'antd';
+import { List, Layout, Typography, theme, Space, Tag, Button } from 'antd';
+import { CaretRightOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import useUserStore from '../store/userStore';
 import { UserStoreState, caseCreationStoreType } from '../type/storeTypes';
 import useCaseCreationStore from '../store/caseCreationStore'
@@ -82,9 +83,21 @@ const EvidenceList: React.FC<EvidenceListProps> = ({data, currentEvidenceId, set
     })
   }
 
+  // const dataDummy = [{
+  //   status: "UNLINKED",
+  //   evidenceId: '1',
+  //   evidenceName: "Name",
+  //   tags: [
+  //     {
+  //       tagId: 'a',
+  //       tagName: "AA"
+  //     }
+  //   ]
+  // }]
+
   return (
   
-  <Layout style={{height: '200px', overflowY: 'auto', background: 'none'}}>
+  <Layout style={{ overflowY: 'auto', background: 'none'}}>
     <List
     itemLayout="horizontal"
     dataSource={data}
@@ -92,9 +105,14 @@ const EvidenceList: React.FC<EvidenceListProps> = ({data, currentEvidenceId, set
       <List.Item
       // className="cursor"
       extra={
-        <Space>
-          <Button type="primary" onClick={() => handleClick(item)}>Select</Button>
-          <Switch checked={item.status == "LINKED" ? true : false} onClick={() => handleSwitch(item.evidenceId, item.status)} />
+        <Space style={{paddingRight: '10px'}}>
+          {/* <Button type="primary" onClick={() => handleClick(item)}>Select</Button> */}
+          <Button type="primary" shape="circle" onClick={() => handleClick(item)} icon={<CaretRightOutlined />} />
+          {/* <Switch checked={item.status == "LINKED" ? true : false} onClick={() => handleSwitch(item.evidenceId, item.status)} /> */}
+          {item.status == "LINKED"  && <Button shape="circle" danger onClick={() => handleSwitch(item.evidenceId, item.status)} icon={<DeleteOutlined />} />}
+          {item.status !== "LINKED"  && 
+            <Button shape="circle" style={{color: 'green', border: 'solid 1px green'}} onClick={() => handleSwitch(item.evidenceId, item.status)} icon={<PlusOutlined />} />
+          }
         </Space>
       } 
       style={currentEvidenceId == item.evidenceId ? {backgroundColor: token.colorBgTextActive} : {background: 'none'}}  
